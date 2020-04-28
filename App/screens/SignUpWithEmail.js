@@ -1,25 +1,104 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {
     View,
-    TextInput,
     Text,
     StyleSheet,
     ImageBackground,
-    TouchableOpacity,
     KeyboardAvoidingView,
     CheckBox,
     Dimensions,
-    ScrollView
-} from 'react-native'
+    ScrollView,
+    Alert
+} from 'react-native';
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import { assets } from '../assets/index';
 import PrimaryInput from '../components/PrimaryInput';
 import PrimaryButton from '../components/PrimaryButton';
 
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 export default SignUpWithEmail = ({ navigation }) => {
+
+    //States
+    const [ Username, setUsername ] = useState('');
+    const [ Email, setEmail ] = useState('');
+    const [ PhoneNo, setPhoneNo ] = useState('');
+    const [ Password, setPassword ] = useState('');
+    const [ Agreement, setAgreement ] = useState(false);
+
+    //Custom Functions
+    const onSignUp = () => {
+
+        auth()
+        .createUserWithEmailAndPassword(Email, Password)
+        .then(async (res) => {
+            const { uid } = res.user;
+            
+            try {
+                //Save uid to async
+                await AsyncStorage.setItem('@UID', res.user.uid);
+
+                //Database
+                database()
+                .ref(`users/${uid}`)
+                .set({
+                    Username,
+                    PhoneNo,
+                    Agreement
+                })
+                .then(() => console.log('Data set.'))
+                .catch( e => console.log(e));
+
+                resetForm();
+                navigation.navigate('Home');
+              } catch (e) {
+                onError(
+                    'Error',
+                    'Something went wrong!'
+                )
+              }
+            
+        })
+        .catch(error => {
+            if (error.code === 'auth/email-already-in-use') {
+                  onError(
+                    "User Exist",
+                    "That email address is already in use!"
+                  );
+            }
+
+            if (error.code === 'auth/invalid-email') {
+                onError(
+                    "Invalid Email",
+                    "That email address is invalid!"
+                )
+            }
+
+            console.error(error);
+        });
+    }
+
+    const resetForm = () => {
+        setUsername('');
+        setEmail('');
+        setPhoneNo('');
+        setPassword('');
+    }
+
+    const onError = (title, desc) => {
+        Alert.alert(
+            title,
+            desc,
+            [
+              { text: "OK" }
+            ],
+            { cancelable: false }
+          );
+    }
+
     return(
         
         <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS == "ios" ? "padding" : "height"}>
@@ -35,25 +114,37 @@ export default SignUpWithEmail = ({ navigation }) => {
 
                         <PrimaryInput
                             label="USERNAME"
+                            value={ Username }
+                            onChange= {(e) => setUsername(e)}
                             />
                         <PrimaryInput
                             label="EMAIL ADDRESS"
+                            value={ Email }
+                            onChange= {(e) => setEmail(e)}
                             />
                         <PrimaryInput
                             label="PHONE NUMBER"
+                            value={ PhoneNo }
+                            onChange= {(e) => setPhoneNo(e)}
                             />
                         <PrimaryInput
                             label="PASSWORD"
                             password={true}
+                            value={ Password }
+                            onChange= {(e) => setPassword(e)}
                         />
 
                             <View style={styles.subContainer_1}>
-                                <CheckBox />
+                                <CheckBox
+                                    value={Agreement}
+                                    onValueChange={() => setAgreement(true)}
+                                />
                                 <Text style={styles.label_1}>I accept the policy and terms</Text>
                             </View>
 
                         <PrimaryButton
                             label="Sign Up"
+                            onPress={onSignUp}
                         />
 
                     </View>

@@ -5,6 +5,8 @@ import Heading from './Heading';
 import Logo from './Logo';
 import SwitchBar from './SwitchBar';
 import QuestionBox from './QuestionBox';
+import Activity from './Activity';
+import ModalView from './ModalView';
 
 export {
     FullWidthBtn,
@@ -13,5 +15,7 @@ export {
     Heading,
     Logo,
     SwitchBar,
-    QuestionBox
+    QuestionBox,
+    Activity,
+    ModalView
 }

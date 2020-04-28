@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, ImageBackground, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import Logo from '../components/Logo';
 import { assets } from '../assets';
-import { Heading, FullWidthBtn } from '../components';
+import { Heading, FullWidthBtn, ModalView } from '../components';
 
 const windowWidth = Dimensions.get('window').width;
 
-export default Information = () => (
-    <ScrollView>
+export default Information = () => {
+
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [ title, setTitle ] = useState('');
+    const [ message, setMessage ] = useState('');
+
+    return (
+        <ScrollView>
         <View style={styles.container} >
             <ImageBackground source={assets.background} style={styles.image}>
                 <View style={styles.subContainer}>
@@ -19,17 +25,36 @@ export default Information = () => (
                 </View>
                 <View style={styles.subContainer}>
 
+                    <ModalView
+                        isModalVisible={isModalVisible}
+                        onClose={() => setModalVisible(false)}
+                        title={title}
+                        message={message}
+                    />
+
                     <FullWidthBtn
                         label="Terms and Conditions"
-                        onPress={() => navigation.navigate('Home')}
+                        onPress={() => {
+                            setTitle('Terms and Conditions');
+                            setMessage('terms and Conditions will display here.');
+                            setModalVisible(true);
+                        }}
                         />
                     <FullWidthBtn
                         label="How Does Covid App Work?"
-                        onPress={() => navigation.navigate('Home')}
+                        onPress={() => {
+                            setTitle('How COVID-ALERT App Works');
+                            setMessage('How app work will display here.');
+                            setModalVisible(true);
+                        }}
                         />
                     <FullWidthBtn
                         label="Purpose of Donations?"
-                        onPress={() => navigation.navigate('Home')}
+                        onPress={() => {
+                            setTitle('Donations');
+                            setMessage("You can make donations of 1 peso to the desired amount, and these will be contributed to preventation institutions of families that have lost relatives due to the virus-crown.");
+                            setModalVisible(true);
+                        }}
                         />
                     <FullWidthBtn
                         label="OMS"
@@ -50,7 +75,8 @@ export default Information = () => (
 
         </View>
     </ScrollView>
-);
+    )
+};
 
 const styles = StyleSheet.create({
     container: {

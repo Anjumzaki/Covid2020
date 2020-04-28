@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, ImageBackground, StyleSheet, Dimensions } from 'react-native';
 import Logo from '../components/Logo';
 import { assets } from '../assets';
@@ -6,8 +6,12 @@ import { Heading, FullWidthBtn } from '../components';
 
 const windowWidth = Dimensions.get('window').width;
 
-export default Home = () => (
-    <View style={styles.container} >
+export default Home = ({ navigation }) => {
+
+    
+    return(
+        <View style={styles.container} >
+            
         <ImageBackground source={assets.background} style={styles.image}>
             <View style={styles.subContainer}>
                 <Logo />
@@ -20,15 +24,15 @@ export default Home = () => (
 
                 <FullWidthBtn
                     label="Configurations"
-                    onPress={() => navigation.navigate('Home')}
+                    onPress={() => navigation.navigate('Configurations')}
                 />
                 <FullWidthBtn
                     label="Monitoring"
-                    onPress={() => navigation.navigate('Home')}
+                    onPress={() => navigation.navigate('Monitoring')}
                 />
                 <FullWidthBtn
                     label="Information"
-                    onPress={() => navigation.navigate('Home')}
+                    onPress={() => navigation.navigate('Information')}
                 />
 
             </View>
@@ -36,7 +40,8 @@ export default Home = () => (
         </ImageBackground>
 
     </View>
-);
+    )
+};
 
 const styles = StyleSheet.create({
     container: {

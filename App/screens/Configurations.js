@@ -3,9 +3,17 @@ import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { colors } from '../constants/theme';
 import { PrimaryButton, SwitchBar, QuestionBox } from '../components';
 import { CheckBox } from 'react-native-elements';
+import auth from '@react-native-firebase/auth';
 
 
 const Width = Dimensions.get('window').width;
+const Height = Dimensions.get('window').height;
+
+const onSignOut = () => {
+    auth()
+    .signOut()
+    .then(() => console.log('User signed out!'));
+}
 
 export default Configurations = () => (
     <ScrollView>
@@ -141,7 +149,8 @@ export default Configurations = () => (
         <Text style={styles.heading}>Delete All Personal Data Information</Text>
         <PrimaryButton
             label="Delete"
-            />
+            onPress={onSignOut}
+        />
     </View>
     </ScrollView>
 );
@@ -151,7 +160,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         backgroundColor: '#ffffff',
-        paddingBottom: 20
+        height: Height
     },
     subContainer: {
         width: Width,
